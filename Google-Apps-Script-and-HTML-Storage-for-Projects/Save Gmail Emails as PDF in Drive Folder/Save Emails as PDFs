@@ -1,0 +1,66 @@
+function saveGmailAsPDF() {
+
+  var gmailLabels  = "Moved to Drive"; //name of Gmail folder containing target emails
+  var driveFolder  = "PDF Copies of Emails"; //name of google drive folder to copy emails to
+  var threads = GmailApp.search("in:" + gmailLabels, 0, 170);
+
+  if (threads.length > 0) {
+
+//Create Google Drive folder to save emails
+    var folders = DriveApp.getFoldersByName(driveFolder);
+    var folder = folders.hasNext() ?
+        folders.next() : DriveApp.createFolder(driveFolder);
+
+//Gmail Label that contains emails to copy
+    var label = GmailApp.getUserLabelByName(gmailLabels) ?
+        GmailApp.getUserLabelByName(gmailLabels) : GmailApp.createLabel(driveFolder);
+
+    for (var t=0; t<threads.length; t++) {
+
+      threads[t].removeLabel(label);
+      var msgs = threads[t].getMessages();
+
+         var html = "";
+        var attachments = [];
+
+      var subject = threads[t].getFirstMessageSubject();
+
+//Append all the threads in a message in an HTML document
+      for (var m=0; m<msgs.length; m++) {
+
+//for each email retrieve information and attachments and add format        
+        var msg = msgs[m];
+
+        html += "From: " + msg.getFrom() + "<br />";
+        html += "To: " + msg.getTo() + "<br />";
+        html += "Date: " + msg.getDate() + "<br />";
+        html += "Subject: " + msg.getSubject() + "<br />";
+        html += "<hr />";
+        html += msg.getBody().replace(/<img[^>]*>/g,"");
+        html += "<hr />";
+
+
+        var atts = msg.getAttachments();
+        for (var a=0; a<atts.length; a++) {
+          attachments.push(atts[a]);
+        }
+      }
+
+//Save email attachments as files and create links in the pdf footer
+      if (attachments.length > 0) {
+        var footer = "<strong>Attachments:</strong><ul>";
+        for (var z=0; z<attachments.length; z++) {
+          var file = folder.createFile(attachments[z]);
+          footer += "<li><a href='" + file.getUrl() + "'>" + file.getName() + "</a></li>";
+        }
+        html += footer + "</ul>";
+      }
+
+//Convert the Email Thread into a PDF File and upload to drive folder
+      var tempFile = DriveApp.createFile("temp.html", html, "text/html");
+      folder.createFile(tempFile.getAs("application/pdf")).setName(subject + ".pdf");
+      tempFile.setTrashed(true);
+
+    }
+  }
+}

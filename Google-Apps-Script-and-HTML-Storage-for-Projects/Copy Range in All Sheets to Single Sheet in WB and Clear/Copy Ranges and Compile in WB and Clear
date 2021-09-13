@@ -1,0 +1,18 @@
+function compilecopyclear() {
+  var ss = SpreadsheetApp.openById('url1'); // remove spaces and include target spreadsheet ID
+  
+  var allsheets = ss.getSheets(sheet1);
+  var exclude = ["exclude1","exclude2","exclude3"]; // array of sheet names to exclude from the execution
+
+  for(var s in allsheets){ //for all sheets not listed in array on  ln5
+    var infosheet = allsheets[s]; // stop if the condition is meet- condition is sheet name
+
+    if(exclude.indexOf(infosheet.getName())== -1) continue; //if sheet name is not listed on ln5
+      var source = infosheet.getRange (4,12,10,1) //range of data to copy
+      var destsheet= ss.getsheetbyname("compiled"); //sheet used for record retention
+      var destRange = destSheet.getRange(destSheet.getLastcolumn()+1,1); //find next empty column in record retention sheet
+  
+  source.copyTo (destRange); //paste copied data ln11 into destRange ln13
+  source.clear (); //remove copied data from copied sheet ln11
+}
+}

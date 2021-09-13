@@ -1,0 +1,18 @@
+function sendEmails() {
+  var sheet = SpreadsheetApp.openById('url1'); //enter spreadsheet ID
+  var startRow = 2; //first row of data to process
+  var numRows = 2; //number of rows to process
+  
+  //fetch range
+  var dataRange = sheet.getRange(startRow, 2, numRows, 2);
+  //fetch values for each row in the range
+  var data = dataRange.getValues();
+
+  for (i in data) {
+    var row = data[i]; //for each row that has data
+    var emailAddress = row[0]; //pull email address
+    var message =  'Below is the robo-calling information for a member that you are listed as the Support Coordinator for. If you believe you have received this in error, please respond to this message.' + '\n' + '\n' + '\n' + 'AssistID: ' + row[3] + '\n' + 'Consumer: ' + row[4] + '\n' + 'Phone: ' + row[5] + '\n' + 'Appointment Date: ' + row[6] + '\n' + 'Appointment Time: ' + row[7] + '\n' + 'Last Call Date: ' + row[8] + '\n' + 'Last Call Time: ' + row[9] + '\n' + 'Support Coordinator: ' + row[10] + '\n' + 'Supervisor: ' + row[11] + '\n' + 'Call Result: ' + row[12].toString() + '\n' + 'Reponse: ' + row[13] + '\n' //create email message and pull data from cells in spreadsheet from corresponding row
+    var subject = 'Inform: Robo Call Completed'; //subject of email
+    MailApp.sendEmail(emailAddress, subject, message); //send email with created message and subject line to email address pulled in each row
+  }
+  }

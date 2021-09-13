@@ -1,0 +1,17 @@
+function copyrangetotabinwb() {
+  var sss = SpreadsheetApp.openById('url1'); //URL of spreadsheet to copy from
+  var ss = sss.getSheetByName('sheet1'); //sheet to copy range from
+
+  //Get full range of data
+  var SRange = ss.getDataRange();
+  //get A1 notation identifying the range
+  var A1Range = SRange.getA1Notation();
+  //get the data values in range
+  var SData = SRange.getValues();
+
+  var tss = SpreadsheetApp.openById('url2'); //URL of spreadsheet to copy to
+  var ts = tss.getSheetByName('sheet2'); //sheet to paste copied range in
+  //set the target range to the values of the source data
+  
+  ts.getRange(A1Range).setValues(SData);
+} 

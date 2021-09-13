@@ -1,0 +1,12 @@
+function searchdrive() { //Search all google drive files and locations of files that contain google apps script or html
+  var results = [];
+  var types = [MimeType.GOOGLE_APPS_SCRIPT, MimeType.HTML]; //file types to search for
+  for (var t in types) {
+    var files = DriveApp.getFilesByType(types[t]); //search in google drive
+    while (files.hasNext()) {
+      var file = files.next();
+      results.push(file);
+      Logger.log([file.getDateCreated(), file.getName(), file.getUrl()].join()); //return file name, date created and url in logger
+    }
+  }
+}
